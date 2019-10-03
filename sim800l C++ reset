@@ -1,0 +1,47 @@
+#include <SoftwareSerial.h>
+SoftwareSerial mySerial(10, 11);
+int cont=6;
+int contstate;
+void setup(){
+  pinMode(cont,INPUT_PULLUP);
+  Serial.begin(9600);
+  mySerial.begin(9600);
+ Serial.println("initializing....");
+ delay(1000);
+ mySerial.println("AT");
+ updateSerial();
+ mySerial.println("AT+CMGF=1");
+ updateSerial();
+ mySerial.println("AT+CMGS=\"+254720000000\"");
+ updateSerial();
+// mySerial.println("Thank you for using mlinzi bora");
+// updateSerial();
+// mySerial.write(26);
+}
+
+void(* resetFunc) (void) = 0; //declare reset function @ address 0
+
+void loop(){
+  contstate=digitalRead(cont);
+  if(contstate==1){
+   
+     mySerial.println("Exam package NO:342343 has been voided");
+ updateSerial();
+ mySerial.write(26);
+ delay(2000);
+ resetFunc();
+  }
+}
+
+
+void updateSerial(){
+  delay(500);
+  while(Serial.available())
+  {
+    mySerial.write(Serial.read());
+  }
+  while(mySerial.available()){
+    Serial.write(mySerial.read());
+  }
+  
+}
